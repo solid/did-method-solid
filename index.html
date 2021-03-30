@@ -14,14 +14,17 @@
         editors: [{
           name: "Sarven Capadisli",
           url: "https://csarven.ca/#i",
-          company: "Inrupt",
-          companyURL: "https://inrupt.com",
           email: "info@csarven.ca"
         },
         {
           name: "Amy Guy",
           url: "https://rhiaro.co.uk",
           email: "amy@rhiaro.co.uk"
+        },
+        {
+          name: "Dmitri Zagidulin",
+          url: "http://computingjoy.com",
+          email: "dzagidulin@gmail.com"
         }],
         github: "https://github.com/solid/did-method-solid",
 
@@ -51,7 +54,7 @@
           },
           "SOLID-PROTOCOL": {
             title: "The Solid Protocol",
-            href: "https://solidpoject.org/protocol",
+            href: "https://solidproject.org/protocol",
             authors: ["Sarven Capadisli", "Tim Berners-Lee", "Ruben Verborgh", "Kjetil Kjernsmo", "Justin Bingham", "Dmitri Zagidulin"],
             status: "ED",
             publisher: "W3C Solid Community Group"
@@ -64,7 +67,7 @@
     <section id="abstract">
       <p>
 This DID method is designed to be compatible with
-<a href="https://solidproject.org">Solid</a> set of protocols, so that Solid
+<a href="https://solidproject.org/TR/">Solid</a> set of protocols, so that Solid
 <a href="https://solidproject.org/TR/protocol#data-pod">data pods</a> can be
 used as <a href="https://www.w3.org/TR/did-core/#dfn-verifiable-data-registry">
 verifiable data registries</a> for the reading and writing of DID documents.
@@ -175,7 +178,7 @@ solid-did = "did:solid:" domain-name * (":" path)
         <pre class="example nohighlight" title="Example Web Method DIDs">
 did:solid:data-pod.example
 
-did:solid:data-pod.example:alice
+did:solid:data-pod.example:guinan
         </pre>
       </section>
 
@@ -190,14 +193,14 @@ representation</a> for DID documents [[DID-CORE]].
         <p>
 The <code>@context</code> value MUST contain the Solid context URL
 as the second entry in the list (following the DID Core context URL).
-The Solid context URl is: <code>https://context-TODO</code>.
+The Solid context URL is: <code>https://TODO-solid-context</code>.
         </p>
         <p>
 The definition of the Solid DID JSON-LD context is:
         </p>
 
         <p class="issue" title="Solid context">
-Todo
+TODO
         </p>
         <p>
 DID documents for Solid DIDs MAY contain any verification methods and
@@ -213,10 +216,10 @@ context or the Solid context.
         <h2>
 Authorization
         </h2>
-        <p class="issue" title="Access control">
+        <p class="issue" title="Authorization">
 TODO: "A DID method specification MUST define how authorization is performed
-to execute all operations, including any necessary cryptographic processes."
-...using whatever Solid does these days.
+to execute all operations, including any necessary cryptographic processes
+- https://w3c.github.io/did-core/#method-operations"
         </p>
       </section>
       <section>
@@ -274,11 +277,11 @@ header with the value <code>application/did+ld+json</code>.
 
           <p>
 Upon receipt of a valid create request, the server MUST store the triples in the payload
-of the request, and MUST respond with a <code>201</code> or <code>202</code> status code.
+of the request, and MUST respond with a <code>201</code> status code.
           </p>
 
-          <p class="issue" title="Access control">
-Something about access control
+          <p class="issue" title="Authorization">
+Something about Authorization
           </p>
 
         </section>
@@ -335,8 +338,8 @@ present for the DID document with the triples from the request payload. The serv
 MUST respond with a <code>200</code> or <code>204</code> status code.
           </p>
 
-          <p class="issue" title="Access control">
-Something about access control
+          <p class="issue" title="Authorization">
+Something about Authorization
           </p>
 
         </section>
@@ -348,18 +351,18 @@ Deactivate (Revoke)
           <p>
 To delete the DID document, the client MUST retreive the URL by following the
 steps in <a href="#mapping-a-did-to-an-http-url"></a>, and then MUST make an
-HTTP <code>DELETE</code> request to the URL with an <code>Accept</code>
-header with a value including <code>application/did+ld+json</code>.
+HTTP <code>DELETE</code> request to the URL.
           </p>
           <p>
 Upon receipt of such a <code>DELETE</code> request, the server MUST remove the
-triples pertaining to the DID document, and return a <code>202</code> or
+triples pertaining to the DID document, and return a <code>200</code> or
 <code>204</code> status code. The server MUST respond with a <code>404</code>
-status code for future requests to the URL.
+or <code>410</code> status code for future requests to the URL.
+
           </p>
 
-          <p class="issue" title="Access control">
-Something about access control
+          <p class="issue" title="Authorization">
+Something about Authorization
           </p>
 
         </section>
@@ -376,9 +379,8 @@ DNS Considerations
           </h3>
 
           <p class="issue" title="DNS tracking">
-Add warning - all resolutions of a did:solid identifier using DNS are centrally
-logged, enabling pervasive tracking mechanisms.
-          </p>
+Add warning - all resolutions of a <code>did:solid</code> identifier using DNS
+are centrally logged, enabling pervasive tracking mechanisms. </p>
 
         </section>
 
