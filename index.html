@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>did:solid Method Specification</title>
+    <script src="https://www.w3.org/Tools/respec/respec-w3c" async class="remove"></script>
+    <script class="remove">
+      var respecConfig = {
+        specStatus: "CG-DRAFT",
+        shortName: "did-method-solid",
+        wg: "Solid Community Group",
+        wgURI: "https://www.w3.org/community/solid/",
+        wgPublicList: "public-solid",
+        editors: [{
+          name: "Sarven Capadisli",
+          url: "https://csarven.ca/#i",
+          company: "Inrupt",
+          companyURL: "https://inrupt.com",
+          email: "info@csarven.ca"
+        },
+        {
+          name: "Amy Guy",
+          url: "https://rhiaro.co.uk",
+          email: "amy@rhiaro.co.uk"
+        }],
+        github: "https://github.com/solid/did-method-solid",
+
+        localBiblio: {
+          "DID-PRIMER": {
+            title: "DID Primer",
+            href: "https://github.com/WebOfTrustInfo/rebooting-the-web-of-trust-fall2017/blob/master/topics-and-advance-readings/did-primer.md",
+            authors: [
+              "Drummond Reed",
+              "Manu Sporny",
+              ],
+            publisher: "Rebooting the Web of Trust 2017"
+          },
+          "DID-DNS": {
+            title: "The Decentralized Identifier (DID) in the DNS",
+            href: "https://tools.ietf.org/html/draft-mayrhofer-did-dns-01",
+            authors: ["A. Mayrhofer", "D. Klesev", "M. Sabadello"],
+            status: "Internet Draft",
+            publisher: "IETF"
+          },
+          "DID-WEB": {
+            title: "Web DID method specification",
+            href: "https://w3c-ccg.github.io/did-method-web/",
+            authors: ["Dmitri Zagidulin", "Amy Guy", "Oliver Terbu"],
+            status: "CG-DRAFT",
+            publisher: "W3C Credentials Community Group"
+          },
+          "SOLID-PROTOCOL": {
+            title: "The Solid Protocol",
+            href: "https://solidpoject.org/protocol",
+            authors: ["Sarven Capadisli", "Tim Berners-Lee", "Ruben Verborgh", "Kjetil Kjernsmo", "Justin Bingham", "Dmitri Zagidulin"],
+            status: "ED",
+            publisher: "W3C Solid Community Group"
+          }
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+This DID method is designed to be compatible with
+<a href="https://solidproject.org">Solid</a> set of protocols, so that Solid
+<a href="https://solidproject.org/TR/protocol#data-pod">data pods</a> can be
+used as <a href="https://www.w3.org/TR/did-core/#dfn-verifiable-data-registry">
+verifiable data registries</a> for the reading and writing of DID documents.
+      </p>
+    </section>
+    <section id="sotd">
+    </section>
+    <section>
+      <h1>
+Introduction
+      </h1>
+      <section>
+        <h2>
+Preface
+        </h2>
+        <p>
+The Solid DID method specification conforms to the requirements specified in the
+Decentralized Identifiers v1.0 Specification [[DID-CORE]]. For more
+information about DIDs and DID method specifications, please also see the
+DID Primer [[?DID-PRIMER]].
+        </p>
+        <p>
+The DID method operations are designed to be compatible with existing Solid
+servers. For more information, see Solid Protocol [[SOLID-PROTOCOL]].
+        </p>
+        <p class="issue" title="Name of this DID method">
+The Solid DID method specification is a specialisation of the Web DID method
+[[DID-WEB]] whereby write (create, update, delete) operations are more tightly
+specified. The Solid DID method is designed to be generic enough to be compatible
+with other Web-based systems which implement read and write operations using
+HTTP verbs. For this reason, we are considering whether to name the DID method
+<code>did:https</code> or <code>did:rest</code> or similar.
+        </p>
+      </section>
+      <section id="conformance">
+<!-- This section is filled automatically by ReSpec. -->
+      </section>
+      <section>
+        <h2>
+Example
+        </h2>
+
+        <p class="issue" title="More examples">
+        </p>
+
+        <pre class="example" title="Example did:solid DID document">
+{
+  "@context": ["https://w3.org/ns/did/v1", "https://TODO-solid-context"],
+  "id": "did:solid:csarven.ca",
+  "authentication": [{
+  ...
+  }]
+}
+        </pre>
+      </section>
+    </section>
+
+    <section>
+      <h1>
+Solid DID Method Specification
+      </h1>
+
+      <section>
+        <h2>
+Verifiable data registry
+        </h2>
+        <p>
+The verifiable data registry of the Solid DID method is the web host that the domain
+name described by the DID resolves to when queried through the Domain Name System
+(DNS). This MAY be a Solid <a href="https://solidproject.org/TR/protocol#data-pod">data
+pod</a> [[SOLID-PROTOCOL]].
+        </p>
+      </section>
+
+      <section>
+        <h2>
+Method name
+        </h2>
+        <p>
+The namestring that shall identify this DID method is: <code>solid</code>.
+A DID that uses this method MUST begin with the following prefix:
+<code>did:solid</code>. This string MUST be in lowercase.
+        </p>
+      </section>
+
+      <section>
+        <h2>
+Method-specific identifier
+        </h2>
+        <p>
+The method specific identifier is a fully qualified domain name that is
+secured by a TLS/SSL certificate with an optional path to the DID document.
+The formal rules describing valid domain name syntax are described in
+[[RFC1035]], [[RFC1123]], and [[RFC2181]].
+        </p>
+        <p>
+The method specific identifier MUST match the common name used in the SSL/TLS
+certificate, and it MUST NOT include IP addresses or port numbers. Directories
+and subdirectories MAY optionally be included, delimited by colons rather
+than slashes.
+        </p>
+
+        <pre class="nohighlight">
+solid-did = "did:solid:" domain-name
+solid-did = "did:solid:" domain-name * (":" path)
+        </pre>
+
+        <pre class="example nohighlight" title="Example Web Method DIDs">
+did:solid:data-pod.example
+
+did:solid:data-pod.example:alice
+        </pre>
+      </section>
+
+      <section>
+        <h2>
+Representation
+        </h2>
+        <p>
+Solid DIDs use the <a href="https://www.w3.org/TR/did-core/#json-ld">JSON-LD
+representation</a> for DID documents [[DID-CORE]].
+        </p>
+        <p>
+The <code>@context</code> value MUST contain the Solid context URL
+as the second entry in the list (following the DID Core context URL).
+The Solid context URl is: <code>https://context-TODO</code>.
+        </p>
+        <p>
+The definition of the Solid DID JSON-LD context is:
+        </p>
+
+        <p class="issue" title="Solid context">
+Todo
+        </p>
+        <p>
+DID documents for Solid DIDs MAY contain any verification methods and
+service endpoints as required by the DID controller.
+        </p>
+        <p>
+All terms in the DID document MUST be present in either the DID Core
+context or the Solid context.
+        </p>
+      </section>
+
+      <section>
+        <h2>
+Authorization
+        </h2>
+        <p class="issue" title="Access control">
+TODO: "A DID method specification MUST define how authorization is performed
+to execute all operations, including any necessary cryptographic processes."
+...using whatever Solid does these days.
+        </p>
+      </section>
+      <section>
+        <h2>
+Mapping a DID to an HTTP URL
+        </h2>
+        <p>
+A prerequisite for the Solid DID method operations is to map the DID subject
+URI to an HTTP URL. This is done as follows:
+        </p>
+        <ol>
+          <li>
+Replace ":" with "/" in the method specific identifier to obtain the fully
+qualified domain name and optional path.
+          </li>
+          <li>
+Generate an HTTPS URL to the expected location of the DID document by
+prepending <code>https://</code>.
+          </li>
+        </ol>
+        <p class="issue" title="Location of DID doc">
+Do we want to 'hardcode' a path for the actual DID document itself? Eg. A
+final step in the above could be "append <code>/did</code> to the URL".
+Otherwise we just rely on the content type and the server returns the DID doc
+for the DID subject URI given the correct content type? Or do we use the
+<code>type</code> Link header, as is done for containers?
+        </p>
+      </section>
+
+      <section>
+        <h2>
+DID method operations
+        </h2>
+        <section>
+          <h3>
+Create (Register)
+          </h3>
+          <p>
+To register a DID for the first time, the client MUST execute an HTTP
+<code>PUT</code> request as follows:
+          </p>
+          <ol>
+            <li>
+Generate the URL by following the steps in <a href="#mapping-a-did-to-an-http-url"></a>.
+            </li>
+            <li>
+Set the body of the HTTP request to the JSON-LD representation of the DID document
+(see <a href="#representation"></a>).
+            </li>
+            <li>
+Execute an HTTP <code>PUT</code> request to the URL with with a <code>Content-Type</code>
+header with the value <code>application/did+ld+json</code>.
+            </li>
+          </ol>
+
+          <p>
+Upon receipt of a valid create request, the server MUST store the triples in the payload
+of the request, and MUST respond with a <code>201</code> or <code>202</code> status code.
+          </p>
+
+          <p class="issue" title="Access control">
+Something about access control
+          </p>
+
+        </section>
+
+        <section>
+          <h3>
+Read (Resolve)
+          </h3>
+          <p>
+The following steps MUST be executed to resolve the DID document from a Solid
+DID:
+          </p>
+
+          <ol>
+            <li>
+Retreive the URL by following the steps in <a href="#mapping-a-did-to-an-http-url"></a>.
+            </li>
+            <li>
+Perform an HTTP <code>GET</code> request to the URL using an agent that can
+successfully negotiate a secure HTTPS connection, with an <code>Accept</code>
+header with a value including <code>application/did+ld+json</code>.
+            </li>
+          </ol>
+          <p class="issue" title="Content type">
+The content type <code>application/did+ld+json</code> is at risk in the DID
+Core specification [[DID-CORE]] so this requirement may change (most likely
+to a content type of <code>application/ld+json</code> accompanied by a
+specific <code>profile</code> value).
+          </p>
+
+          <p class="issue" title="Metadata">
+We may want to make use of <a href="https://www.w3.org/TR/did-core/#did-document-metadata">DID document metadata</a>.
+          </p>
+
+          <p class="issue" title="Verify authenticity">
+TODO: "A DID method specification MUST specify how a DID resolver uses a DID
+to resolve a DID document, including how the DID resolver can verify the
+authenticity of the response. "
+          </p>
+        </section>
+
+        <section>
+          <h3>
+Update
+          </h3>
+          <p>
+To update the DID document, the client MUST perform the same steps as for
+a create operation (see <a href="#create-register"></a>). The entire updated DID
+document (not a diff) MUST be included in the request body.
+          </p>
+          <p>
+Upon receipt of a valid update request, the server MUST replace the triples already
+present for the DID document with the triples from the request payload. The server
+MUST respond with a <code>200</code> or <code>204</code> status code.
+          </p>
+
+          <p class="issue" title="Access control">
+Something about access control
+          </p>
+
+        </section>
+
+        <section>
+          <h3>
+Deactivate (Revoke)
+          </h3>
+          <p>
+To delete the DID document, the client MUST retreive the URL by following the
+steps in <a href="#mapping-a-did-to-an-http-url"></a>, and then MUST make an
+HTTP <code>DELETE</code> request to the URL with an <code>Accept</code>
+header with a value including <code>application/did+ld+json</code>.
+          </p>
+          <p>
+Upon receipt of such a <code>DELETE</code> request, the server MUST remove the
+triples pertaining to the DID document, and return a <code>202</code> or
+<code>204</code> status code. The server MUST respond with a <code>404</code>
+status code for future requests to the URL.
+          </p>
+
+          <p class="issue" title="Access control">
+Something about access control
+          </p>
+
+        </section>
+      </section>
+
+      <section class="informative">
+        <h2>
+Security and privacy considerations
+        </h2>
+
+        <section>
+          <h3>
+DNS Considerations
+          </h3>
+
+          <p class="issue" title="DNS tracking">
+Add warning - all resolutions of a did:solid identifier using DNS are centrally
+logged, enabling pervasive tracking mechanisms.
+          </p>
+
+        </section>
+
+        <section>
+          <h3>
+DID Document Integrity Verification
+          </h3>
+
+          <p class="issue" title="Hashlinks">
+Add discussion of using <a
+href="https://tools.ietf.org/html/draft-sporny-hashlink">Hashlinks</a> to aid
+integrity protection and verification of the DID document.
+          </p>
+
+        </section>
+        <section>
+          <h3>
+In-transit Security
+          </h3>
+
+          <p class="note" title="From did:web">
+This section has been copied from the Web DID method specification and may
+need revising [[DID-WEB]].
+          </p>
+
+          <p>
+At least TLS 1.2 should be configured to use only strong ciphers suites and to
+use sufficiently large key sizes. As recommendations may be volatile these days,
+only the very latest recommendations should be used. However, as a rule of
+thumb, the following must be used:
+          </p>
+
+          <ul>
+            <li>
+Ephemeral keys are to be used.
+            </li>
+            <li>
+ECDHE with one of the strong curves {X25519, brainpoolP384r1, NIST P-384,
+brainpoolP256r1, NIST P-256} shall be used as key exchange.
+            </li>
+            <li>
+AESGCM or ChaCha20 with 256 bit large keys shall be used for bulk encryption
+            </li>
+            <li>
+ECDSA with one of the strong curves {brainpoolP384r1, NIST P-384,
+brainpoolP256r1, NIST P-256} or RSA (at least 3072) shall be used.
+            </li>
+            <li>
+Authenticated Encryption with Associated Data (AEAD) shall be used as Mac.
+            </li>
+            <li>
+At least SHA256 shall be used, but SHA384 or POLY1305 are recommended.
+            </li>
+          </ul>
+
+          <p>
+Examples of strong SSL/TLS configurations for now are:
+          </p>
+          <ul>
+            <li>
+<code>ECDHE-ECDSA-AES256-GCM-SHA384, TLSv1.2, Kx=ECDH, Au=ECDSA,
+Enc=AESGCM(256), Mac=AEAD</code>
+            </li>
+            <li>
+<code>ECDHE-RSA-AES256-GCM-SHA384, TLSv1.2, Kx=ECDH, Au=RSA Enc=AESGCM(256),
+Mac=AEAD</code>
+            </li>
+            <li>
+<code>ECDHE-ECDSA-CHACHA20-POLY1305, TLSv1.2, Kx=ECDH, Au=ECDSA,
+Enc=ChaCha20-Poly1305, Mac=AEAD</code>
+            </li>
+            <li>
+<code>ECDHE-RSA-CHACHA20-POLY1305, TLSv1.2, Kx=ECDH, Au=RSA,
+Enc=ChaCha20-Poly1305, Mac=AEAD</code>
+            </li>
+            <li>
+<code>ECDHE-RSA-AES256-GCM-SHA384, TLSv1.2, Kx=ECDH, Au=RSA,
+Enc=AESGCM(256), Mac=AEAD</code>
+            </li>
+            <li>
+<code>ECDHE-ECDSA-AES256-GCM-SHA384, TLSv1.2, Kx=ECDH, Au=ECDSA,
+Enc=AESGCM(256), Mac=AEAD</code>
+            </li>
+          </ul>
+
+          <p>
+It is recommended to adhere to OWASP's Transport Layer Protection Cheat Sheet
+[[OWASP-TRANSPORT]] latest recommendations for hardening TLS configurations.
+          </p>
+
+          <p>
+Delete action can be performed by domain name registrars or DNS lookup
+services.
+          </p>
+
+        </section>
+      </section>
+    </section>
+
+  </body>
+</html>
