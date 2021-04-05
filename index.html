@@ -54,7 +54,7 @@
           },
           "SOLID-PROTOCOL": {
             title: "The Solid Protocol",
-            href: "https://solidproject.org/protocol",
+            href: "https://solidproject.org/TR/protocol",
             authors: ["Sarven Capadisli", "Tim Berners-Lee", "Ruben Verborgh", "Kjetil Kjernsmo", "Justin Bingham", "Dmitri Zagidulin"],
             status: "ED",
             publisher: "W3C Solid Community Group"
@@ -91,15 +91,16 @@ DID Primer [[?DID-PRIMER]].
         </p>
         <p>
 The DID method operations are designed to be compatible with existing Solid
-servers. For more information, see Solid Protocol [[SOLID-PROTOCOL]].
+servers. For more information, see the Solid Protocol [[SOLID-PROTOCOL]].
         </p>
         <p class="issue" title="Name of this DID method">
 The Solid DID method specification is a specialisation of the Web DID method
 [[DID-WEB]] whereby write (create, update, delete) operations are more tightly
-specified. The Solid DID method is designed to be generic enough to be compatible
-with other Web-based systems which implement read and write operations using
-HTTP verbs. For this reason, we are considering whether to name the DID method
-<code>did:https</code> or <code>did:rest</code> or similar.
+specified. The Solid DID method is designed to be generic enough to be
+compatible with other Web-based systems which implement read and write
+operations using HTTP methods (RFC 7231). For this reason, we are considering
+whether to name the DID method <code>did:https</code> or <code>did:rest</code>
+or similar.
         </p>
       </section>
       <section id="conformance">
@@ -164,7 +165,7 @@ The formal rules describing valid domain name syntax are described in
 [[RFC1035]], [[RFC1123]], and [[RFC2181]].
         </p>
         <p>
-The method specific identifier MUST match the common name used in the SSL/TLS
+The method specific identifier MUST match the common name used in the TLS/SSL
 certificate, and it MUST NOT include IP addresses or port numbers. Directories
 and subdirectories MAY optionally be included, delimited by colons rather
 than slashes.
