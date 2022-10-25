@@ -68,7 +68,7 @@
       <p>
 This DID method is designed to be compatible with
 <a href="https://solidproject.org/TR/">Solid</a> set of protocols, so that Solid
-<a href="https://solidproject.org/TR/protocol#data-pod">data pods</a> can be
+<a href="https://solidproject.org/TR/protocol#server">server</a> can be
 used as <a href="https://www.w3.org/TR/did-core/#dfn-verifiable-data-registry">
 verifiable data registries</a> for the reading and writing of DID documents.
       </p>
@@ -138,8 +138,7 @@ Verifiable data registry
         <p>
 The verifiable data registry of the Solid DID method is the web host that the domain
 name described by the DID resolves to when queried through the Domain Name System
-(DNS). This MAY be a Solid <a href="https://solidproject.org/TR/protocol#data-pod">data
-pod</a> [[SOLID-PROTOCOL]].
+(DNS). This MAY be a Solid <a href="https://solidproject.org/TR/protocol#server">server</a> [[SOLID-PROTOCOL]].
         </p>
       </section>
 
@@ -177,9 +176,9 @@ solid-did = "did:solid:" domain-name * (":" path)
         </pre>
 
         <pre class="example nohighlight" title="Example Web Method DIDs">
-did:solid:data-pod.example
+did:solid:server.example
 
-did:solid:data-pod.example:guinan
+did:solid:server.example:guinan
         </pre>
       </section>
 
