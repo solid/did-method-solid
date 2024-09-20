@@ -221,6 +221,36 @@ TODO: "A DID method specification MUST define how authorization is performed
 to execute all operations, including any necessary cryptographic processes
 - https://w3c.github.io/did-core/#method-operations"
         </p>
+
+        <p>
+          The Solid DID method allows the following operations as described in <a href="#did-method-operations"></a>. The following authorization requirements apply to each method operation:
+        </p>
+      
+        <ul>
+          <li>
+            <strong>Create (Register)</strong> (see <a href="#create-register"></a>): 
+            The client must present a valid authentication token proving that the requester is the controller of the DID or has explicit rights to register the DID. The server must validate the token before proceeding. If the token is invalid or insufficient, the server returns a <code>403 Forbidden</code> status code.
+          </li>
+      
+          <li>
+            <strong>Read (Resolve)</strong> (see <a href="#read-resolve"></a>): 
+            If the DID document is public, no authorization is required. For restricted or private DID documents, the client must provide a valid token proving authorization. The server validates the token, and if the token is invalid, the server returns a <code>403 Forbidden</code>.
+          </li>
+      
+          <li>
+            <strong>Update</strong> (see <a href="#update"></a>): 
+            The requester must be the controller of the DID or have been granted authority to update the DID. The client provides an authentication token, which the server must validate before processing the update. An invalid or insufficient token results in a <code>403 Forbidden</code> response.
+          </li>
+      
+          <li>
+            <strong>Deactivate (Revoke)</strong> (see <a href="#deactivate-revoke"></a>): 
+            To deactivate a DID, the requester must be the controller or have the necessary rights to revoke the DID. The server validates the provided authentication token, and if it is invalid or the requester lacks permission, the server responds with <code>403 Forbidden</code>.
+          </li>
+        </ul>
+      
+        <p>
+          Authorization checks ensure that only the rightful controller or authorized agents can perform operations on the DID document. Any unauthorized attempt is blocked by the server with a suitable error response.
+        </p>
       </section>
       <section>
         <h2>
